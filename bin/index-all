@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. _LIBRARY_PATH/git-helpers/include.sh
+
+cd $_PROJECT_BASE_PATH
+
+for _PROJECT in $(ls)
+do
+    cd $_PROJECT
+
+    # TODO: support all branches too
+    _ORIGINAL_BRANCH=$(gcb)
+    for _BRANCH in $(gb)
+    do
+        # ensure we have no changes before checking out another branch
+        gco $_BRANCH
+
+        if [ "$?" -gt "0" ]
+        then
+            echo "Unable to checkout branch due to error"
+            exit 1
+        fi
+
+        index
+    done
+
+    # switch back to original branch
+    gco $_ORIGINAL_BRANCH
+
+    cd ..
+done
