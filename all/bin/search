@@ -1,0 +1,18 @@
+#!/bin/sh
+
+import .
+import git:git/project.directory.sh
+import git:git/include.sh
+
+if [ $# -eq 0 ]; then
+	_error "Expecting at least 1 argument, search term"
+fi
+
+if [ -z "$_SEARCH_SCOPE" ]; then
+	(_git_in_project_base_path || _in_data_path) && {
+		_GIT_WARN=1 _get_project_directory && _SEARCH_SCOPE=base || _SEARCH_SCOPE=recursive
+	} || _SEARCH_SCOPE=all
+fi
+
+_info "Search ($_SEARCH_SCOPE | $(basename $PWD)): $*"
+_search_${_SEARCH_SCOPE} "$@"
