@@ -1,0 +1,18 @@
+#!/bin/sh
+
+import .
+import git:git/project.directory.sh
+import git:git/include.sh
+
+[ $# -eq 0 ] && _error "Expecting at least 1 argument, search term"
+
+_SEARCH_FUNCTION=$(printf '%s' "$_SEARCH_TYPE" | tr '/' '_')
+_SEARCH_SUPER_TYPE=$(printf '%s' "$_SEARCH_TYPE" | sed -e 's/\/.*$//')
+
+[ -z "$_SEARCH_SCOPE" ] && _get_search_${_SEARCH_SUPER_TYPE}_scope
+
+_info "Search ($_SEARCH_SCOPE | $(basename $PWD)): $*"
+_SEARCH_SCOPE_FUNCTION=$(printf '%s' "$_SEARCH_SCOPE" | sed -e 's/\./wd/')
+_call _search_${_SEARCH_SUPER_TYPE}_${_SEARCH_SCOPE_FUNCTION} "$@" || {
+	[ $? -eq 127 ] && _error "Invalid search type or search scope: ${_SEARCH_SUPER_TYPE} | ${_SEARCH_SCOPE_FUNCTION}"
+}

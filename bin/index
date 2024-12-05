@@ -1,5 +1,0 @@
-#!/bin/sh
-
-_FUNCTION="cindex ."
-
-. _LIBRARY_PATH/_APPLICATION_NAME/include.sh
